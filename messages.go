@@ -15,7 +15,7 @@ import (
 
 func sendToAllFriends(t *gotox.Tox, sendas uint32, message string) error {
 	lastmessageTime := time.Now()
-	for _, t2 := range toxes {
+	for k, t2 := range toxes {
 		if t == t2.tox {
 			lastmessageTime = t2.users[sendas].lastMessage.messageTime
 			if lastmessageTime.After(time.Now().Add(-10*time.Second)) && message == t2.users[sendas].lastMessage.text {
@@ -25,13 +25,13 @@ func sendToAllFriends(t *gotox.Tox, sendas uint32, message string) error {
 			usr := t2.users[sendas]
 			usr.lastMessage.messageTime = time.Now()
 			usr.lastMessage.text = message
-			t2.users[sendas] = usr
+			toxes[k].users[sendas] = usr
 
 			if t2.lastMessageFrom != sendas || lastmessageTime.Before(time.Now().Add(-3*time.Minute)) {
 				//t.FriendSendMessage(v, gotox.TOX_MESSAGE_TYPE_ACTION, "From: "+name)
 				message = ">>> From: " + getFriendName(t, sendas) + "\n" + message
 			}
-			t2.lastMessageFrom = sendas
+			toxes[k].lastMessageFrom = sendas
 		}
 	}
 
@@ -205,7 +205,7 @@ func onFriendMessage(t *gotox.Tox, friendNumber uint32, messagetype gotox.ToxMes
 		case "credits":
 			t.FriendSendMessage(friendNumber, gotox.TOX_MESSAGE_TYPE_ACTION, "Script by Lealen bez\nThis script will not occur without the participation of:\ndd (da313...)\nM (6eca7...)\ntm (60740...)")
 		case "version":
-			t.FriendSendMessage(friendNumber, gotox.TOX_MESSAGE_TYPE_ACTION, "gotoxgroupchat v0.7.10.25-r1 by Lealen bez\nGNU Terry Pratchett")
+			t.FriendSendMessage(friendNumber, gotox.TOX_MESSAGE_TYPE_ACTION, "gotoxgroupchat v0.7.10.25-r2 by Lealen bez\nGNU Terry Pratchett")
 		case "unstuck":
 			t.FriendSendMessage(friendNumber, gotox.TOX_MESSAGE_TYPE_ACTION, "Teleporting...\nWHOOSH!")
 		case "moo":
