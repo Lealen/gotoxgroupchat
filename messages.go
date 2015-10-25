@@ -18,7 +18,7 @@ func sendToAllFriends(t *gotox.Tox, sendas uint32, message string) error {
 	for _, t2 := range toxes {
 		if t == t2.tox {
 			lastmessageTime = t2.users[sendas].lastMessage.messageTime
-			if lastmessageTime.Before(time.Now().Add(5*time.Second)) && message == t2.users[sendas].lastMessage.text {
+			if lastmessageTime.After(time.Now().Add(-10*time.Second)) && message == t2.users[sendas].lastMessage.text {
 				fmt.Println("Message canceled, too quick")
 				return nil
 			}
@@ -26,22 +26,18 @@ func sendToAllFriends(t *gotox.Tox, sendas uint32, message string) error {
 			usr.lastMessage.messageTime = time.Now()
 			usr.lastMessage.text = message
 			t2.users[sendas] = usr
+
+			if t2.lastMessageFrom != sendas || lastmessageTime.Before(time.Now().Add(-3*time.Minute)) {
+				//t.FriendSendMessage(v, gotox.TOX_MESSAGE_TYPE_ACTION, "From: "+name)
+				message = ">>> From: " + getFriendName(t, sendas) + "\n" + message
+			}
+			t2.lastMessageFrom = sendas
 		}
 	}
 
 	allFriends, err := t.SelfGetFriendlist()
 	if err != nil {
 		return err
-	}
-
-	for _, t2 := range toxes {
-		if t == t2.tox {
-			if t2.lastMessageFrom != sendas || lastmessageTime.After(time.Now().Add(3*time.Minute)) {
-				//t.FriendSendMessage(v, gotox.TOX_MESSAGE_TYPE_ACTION, "From: "+name)
-				message = ">>> From: " + getFriendName(t, sendas) + "\n" + message
-			}
-			t2.lastMessageFrom = sendas
-		}
 	}
 
 	searchforurls := strings.Split(message, " ")
