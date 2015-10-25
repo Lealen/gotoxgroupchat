@@ -36,7 +36,7 @@ func sendToAllFriends(t *gotox.Tox, sendas uint32, message string) error {
 
 	for _, t2 := range toxes {
 		if t == t2.tox {
-			if t2.lastMessageFrom != sendas || lastmessageTime.After(time.Now().Add(-3*time.Minute)) {
+			if t2.lastMessageFrom != sendas || lastmessageTime.After(time.Now().Add(3*time.Minute)) {
 				//t.FriendSendMessage(v, gotox.TOX_MESSAGE_TYPE_ACTION, "From: "+name)
 				message = ">>> From: " + getFriendName(t, sendas) + "\n" + message
 			}
