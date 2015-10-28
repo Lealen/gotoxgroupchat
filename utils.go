@@ -19,7 +19,9 @@ func getFriendName(t *gotox.Tox, friendNumber uint32) string {
 		pubstr = pubstr[:5]
 	}
 
-	return name + " (" + string(pubstr) + "...)"
+	addtoname := " (" + string('ア'+friendNumber*2) + " " + string(pubstr) + "...)"
+
+	return name + addtoname
 }
 
 func searchForUser(t *gotox.Tox, searchfor string) (friendNumber uint32) {

@@ -353,6 +353,12 @@ func onFileRecvChunk(t *gotox.Tox, friendNumber uint32, fileNumber uint32, posit
 				}
 			}
 
+			for k := range toxes {
+				if t == toxes[k].tox {
+					toxes[k].lastMessageFrom = 4294967295 //make the >>> From: appear for the next message
+				}
+			}
+
 			t.FriendSendMessage(friendNumber, gotox.TOX_MESSAGE_TYPE_ACTION, "File send!")
 		} else {
 			//t.FriendSendMessage(friendNumber, gotox.TOX_MESSAGE_TYPE_ACTION, "Welcome!")

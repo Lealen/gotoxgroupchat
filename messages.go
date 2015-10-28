@@ -14,6 +14,8 @@ import (
 )
 
 func sendToAllFriends(t *gotox.Tox, sendas uint32, message string) error {
+	message = strings.Replace(message, ">>> From:", ">>> Quote:", -1)
+
 	lastmessageTime := time.Now()
 	for k, t2 := range toxes {
 		if t == t2.tox {
