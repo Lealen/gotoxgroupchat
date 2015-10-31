@@ -162,19 +162,7 @@ func onFriendMessage(t *gotox.Tox, friendNumber uint32, messagetype gotox.ToxMes
 				}
 
 				if friendStatus != gotox.TOX_CONNECTION_NONE {
-					name, err := t.FriendGetName(v)
-					if err != nil {
-						name = "unknown"
-					}
-
-					pub, err := t.FriendGetPublickey(v)
-					var pubstr string
-					if err == nil && len(pub) > 5 {
-						pubstr = hex.EncodeToString(pub)
-						pubstr = pubstr[:5]
-					}
-
-					allOnline = append(allOnline, name+" ("+pubstr+"...)")
+					allOnline = append(allOnline, getFriendName(t, v))
 				}
 			}
 			sort.Strings(allOnline)
@@ -187,19 +175,7 @@ func onFriendMessage(t *gotox.Tox, friendNumber uint32, messagetype gotox.ToxMes
 			}
 			var allUsers []string
 			for _, v := range allFriends {
-				name, err := t.FriendGetName(v)
-				if err != nil {
-					name = "unknown"
-				}
-
-				pub, err := t.FriendGetPublickey(v)
-				var pubstr string
-				if err == nil && len(pub) > 5 {
-					pubstr = hex.EncodeToString(pub)
-					pubstr = pubstr[:5]
-				}
-
-				allUsers = append(allUsers, name+" ("+pubstr+"...)")
+				allUsers = append(allUsers, getFriendName(t, v))
 			}
 			sort.Strings(allUsers)
 
@@ -207,7 +183,7 @@ func onFriendMessage(t *gotox.Tox, friendNumber uint32, messagetype gotox.ToxMes
 		case "credits":
 			t.FriendSendMessage(friendNumber, gotox.TOX_MESSAGE_TYPE_ACTION, "Script by Lealen bez\nThis script will not occur without the participation of:\ndd (da313...)\nM (6eca7...)\ntm (60740...)")
 		case "version":
-			t.FriendSendMessage(friendNumber, gotox.TOX_MESSAGE_TYPE_ACTION, "gotoxgroupchat v0.7.10.25-r2 by Lealen bez\nGNU Terry Pratchett")
+			t.FriendSendMessage(friendNumber, gotox.TOX_MESSAGE_TYPE_ACTION, "gotoxgroupchat v0.7.10.31-r2 by Lealen bez\nGNU Terry Pratchett")
 		case "unstuck":
 			t.FriendSendMessage(friendNumber, gotox.TOX_MESSAGE_TYPE_ACTION, "Teleporting...\nWHOOSH!")
 		case "moo":
