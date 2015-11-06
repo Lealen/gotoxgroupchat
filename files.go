@@ -50,14 +50,14 @@ func sendFile(t *gotox.Tox, friendNumber uint32, fileNameOnDisc, fileNameToSend 
 func onFileRecv(t *gotox.Tox, friendNumber uint32, fileNumber uint32, kind gotox.ToxFileKind, filesize uint64, filename string) {
 	if kind == gotox.TOX_FILE_KIND_AVATAR {
 
-		if filesize > MAX_AVATAR_SIZE {
+		if filesize > MaxAvatarSize {
 			// reject file send request
 			t.FileControl(friendNumber, fileNumber, gotox.TOX_FILE_CONTROL_CANCEL)
 			return
 		}
 
 		publicKey, _ := t.FriendGetPublickey(friendNumber)
-		file, err := os.Create("avatar_" + hex.EncodeToString(publicKey) + ".png")
+		file, err := os.Create("files" + string(os.PathSeparator) + "avatar_" + hex.EncodeToString(publicKey) + ".png")
 		if err != nil {
 			fmt.Println("[ERROR] Error creating file", "avatar_"+hex.EncodeToString(publicKey)+".png")
 		}
@@ -92,7 +92,7 @@ func onFileRecv(t *gotox.Tox, friendNumber uint32, fileNumber uint32, kind gotox
 			pubstr = pubstr[:5]
 		}
 
-		file, err := os.Create(name + "_" + pubstr + "_" + filename)
+		file, err := os.Create("files" + string(os.PathSeparator) + name + "_" + pubstr + "_" + filename)
 		if err != nil {
 			fmt.Println("[ERROR] Error creating file", name+"_"+pubstr+"_"+filename)
 		}
@@ -299,7 +299,7 @@ func onFileRecvChunk(t *gotox.Tox, friendNumber uint32, fileNumber uint32, posit
 		}
 		fmt.Println("File transfer completed (receiving)", fileNumber)
 
-		if len(filename) > 7 && filename[:7] != "avatar_" {
+		if !(len(filename) > 7 && filename[:7] == "avatar_") {
 			file, err := os.Open(filename)
 			if err != nil {
 				t.FriendSendMessage(friendNumber, gotox.TOX_MESSAGE_TYPE_ACTION, "Error sending a file: File not found.'")
@@ -316,6 +316,11 @@ func onFileRecvChunk(t *gotox.Tox, friendNumber uint32, fileNumber uint32, posit
 			}
 
 			fmt.Println("File size is ", stat.Size())
+
+			//normalize name
+			if len(filename) > 6 && filename[:6] == "files/" {
+				filename = filename[6:]
+			}
 
 			allFriends, err := t.SelfGetFriendlist()
 			if err != nil {

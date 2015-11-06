@@ -14,13 +14,7 @@ import (
 	"github.com/codedust/go-tox"
 )
 
-type Server struct {
-	Address   string
-	Port      uint16
-	PublicKey []byte
-}
-
-const MAX_AVATAR_SIZE = 65536 // see github.com/Tox/Tox-STS/blob/master/STS.md#avatars
+const MaxAvatarSize = 65536 // see github.com/Tox/Tox-STS/blob/master/STS.md#avatars
 
 type FileTransfer struct {
 	fileHandle *os.File
@@ -68,7 +62,7 @@ type toxe struct {
 var toxes []toxe
 
 func run(filepath, botname string, displayUserInStatusText, addSonendofStatus bool) {
-	var newToxInstance bool = false
+	var newToxInstance = false
 	var options *gotox.Options
 
 	savedata, err := loadData(filepath)
@@ -114,17 +108,8 @@ func run(filepath, botname string, displayUserInStatusText, addSonendofStatus bo
 	tox.CallbackFileRecv(onFileRecv)
 	tox.CallbackFileRecvChunk(onFileRecvChunk)
 
-	/* Connect to the network
-	 * Use more than one node in a real world szenario. This example relies one
-	 * the following node to be up.
-	 */
-	pubkey, _ := hex.DecodeString("04119E835DF3E78BACF0F84235B300546AF8B936F035185E2A8E9E0A67C8924F")
-	server := &Server{"144.76.60.215", 33445, pubkey}
+	connectToToxNetwork(tox)
 
-	err = tox.Bootstrap(server.Address, server.Port, server.PublicKey)
-	if err != nil {
-		panic(err)
-	}
 	go func() {
 		for {
 			time.Sleep(500 * time.Millisecond)
@@ -144,14 +129,15 @@ func main() {
 	fmt.Printf("[INFO] Using Tox version %d.%d.%d\n", gotox.VersionMajor(), gotox.VersionMinor(), gotox.VersionPatch())
 
 	if !gotox.VersionIsCompatible(0, 0, 0) {
-		fmt.Println("[ERROR] The compiled library (toxcore) is not compatible with this example.")
+		fmt.Println("[ERROR] The compiled library (toxcore) is not compatible with this program.")
 		fmt.Println("[ERROR] Please update your Tox library. If this error persists, please report it to the gotox developers.")
 		fmt.Println("[ERROR] Thanks!")
 		return
 	}
 
-	run("./toxsavedata", "gopher hacker", false, true)
+	run("./toxsavedata", "#GoSec_", false, false)
 	run("./toxsavedata2", "czwórka wspaniałych", false, false)
+	run("./toxsavedata3", "gopher hacker", false, true)
 
 	isRunning := true
 

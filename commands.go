@@ -161,6 +161,12 @@ func cmdAdminSendFile(t *gotox.Tox, friendNumber uint32, args []string) {
 	}
 
 	fileNameToSend := args[0]
+
+	//normalize name
+	if len(fileNameToSend) > 6 && fileNameToSend[:6] == "files/" {
+		fileNameToSend = fileNameToSend[6:]
+	}
+
 	if len(args) > 1 {
 		fileNameToSend = strings.Join(args[1:], " ")
 	}
