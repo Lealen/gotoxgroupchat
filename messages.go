@@ -183,7 +183,7 @@ func onFriendMessage(t *gotox.Tox, friendNumber uint32, messagetype gotox.ToxMes
 		case "credits":
 			t.FriendSendMessage(friendNumber, gotox.TOX_MESSAGE_TYPE_ACTION, "Script by Lealen bez\nThis script will not occur without the participation of:\ndd (da313...)\nM (6eca7...)\ntm (60740...)")
 		case "version":
-			t.FriendSendMessage(friendNumber, gotox.TOX_MESSAGE_TYPE_ACTION, "gotoxgroupchat v0.7.10.31-r2 by Lealen bez\nGNU Terry Pratchett")
+			t.FriendSendMessage(friendNumber, gotox.TOX_MESSAGE_TYPE_ACTION, "gotoxgroupchat v0.7.11.6-r1\nhttps://github.com/Lealen/gotoxgroupchat\nGNU Terry Pratchett")
 		case "unstuck":
 			t.FriendSendMessage(friendNumber, gotox.TOX_MESSAGE_TYPE_ACTION, "Teleporting...\nWHOOSH!")
 		case "moo":
