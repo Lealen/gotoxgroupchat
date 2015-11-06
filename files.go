@@ -299,7 +299,7 @@ func onFileRecvChunk(t *gotox.Tox, friendNumber uint32, fileNumber uint32, posit
 		}
 		fmt.Println("File transfer completed (receiving)", fileNumber)
 
-		if !(len(filename) > 7 && filename[:7] == "avatar_") {
+		if !(len(filename) > 13 && filename[:13] == "files/avatar_") {
 			file, err := os.Open(filename)
 			if err != nil {
 				t.FriendSendMessage(friendNumber, gotox.TOX_MESSAGE_TYPE_ACTION, "Error sending a file: File not found.'")
